@@ -1,0 +1,21 @@
+{
+    "name": "xunlight/yii2-toastr",
+    "description": "SImple extension for notifying end user.",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension", "toastr"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "xunlight",
+            "email": "xelo.cz@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "xunlight\\toastr\\": ""
+        }
+    }
+}
