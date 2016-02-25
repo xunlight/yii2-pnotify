@@ -23,6 +23,13 @@ class PNotify extends \yii\bootstrap\Widget
     public $options = [];
     private $alertTypes = ['success','info','warning','error'];
     
+    //papulate marker chars
+    CONST POPULATE_MARKER_BEGIN = '{';
+    CONST POPULATE_MARKER_END   = '}';
+    CONST POPULATE_MARKER_DEFAULT = '{value}';
+    
+    //
+    CONST C_EMPTY = '';
     
     /**
      * Initializes the PNotify widget.
@@ -51,7 +58,7 @@ class PNotify extends \yii\bootstrap\Widget
                 //all mesages for this type
                 foreach ($data as $i => $message) {
                     //show PNotify flash
-                    Yii::$app->view->registerJs(\xunlight\component\Text::populate('window.PNotifyObj.info("{title}", "{text}", "{type}");',[
+                    Yii::$app->view->registerJs(static::populate('window.PNotifyObj.info("{title}", "{text}", "{type}");',[
                             'title' => \yii\helpers\Inflector::humanize( $type ),
                             'text'  => $message,
                             'type'  => $type,
@@ -60,6 +67,28 @@ class PNotify extends \yii\bootstrap\Widget
                 $session->removeFlash($type);
             }
         }
+    }
+    
+	/**
+	 * Populates string 
+	 * 
+	 * @param    string template to use
+	 * @param    array of options (relevant values of translation) or one string represents {value} marker
+	 * @return   string
+	 * 
+	 * @since    1.0.0
+	 *
+	 */
+    public static function populate($template, $options){
+        $replace_pairs = [];
+        if(is_array($options)){
+            foreach ($options as $key => $value) {
+                $replace_pairs[ static::POPULATE_MARKER_BEGIN . $key . static::POPULATE_MARKER_END ] = $value;
+            }
+        }else if((is_string($options))||(is_int($options))){
+            $replace_pairs[ static::POPULATE_MARKER_DEFAULT ] = $options;
+        }
+        return strtr($template, $replace_pairs);
     }
     
     /**
@@ -85,9 +114,13 @@ class PNotify extends \yii\bootstrap\Widget
  * @author xunlight
  * @since 1.0
  */
-class PNotifyAsset extends \xunlight\component\AssetBundle
+class PNotifyAsset extends \yii\web\AssetBundle
 {
 
+    public $depends = [
+        'yii\web\JqueryAsset',
+    ];
+    
     public function init()
     {
         $this->sourcePath = dirname(__FILE__) . '/assets/';
@@ -96,6 +129,25 @@ class PNotifyAsset extends \xunlight\component\AssetBundle
         parent::init();
     }
 
+    /**
+     * Set up CSS and JS asset arrays based on the base-file names
+	 * 
+	 * example: 
+	 * 
+     * @param    string $type whether 'css' or 'js'
+     * @param    array  $files the list of 'css' or 'js' basefile names
+	 * 
+	 * @since    1.0.0
+	 *
+	 */
+    protected function setupAssets($type, $files = [])
+    {
+        $srcFiles = [];
+        foreach ($files as $file) {
+            $srcFiles[] = "{$type}/{$file}." . (YII_DEBUG?'':'min.') . "{$type}";
+        }
+        $this->$type = $srcFiles;
+    }
 }
 
 
