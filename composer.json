@@ -1,8 +1,8 @@
 {
-    "name": "xunlight/yii2-toastr",
+    "name": "xunlight/yii2-pnotify",
     "description": "SImple extension for notifying end user.",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension", "toastr"],
+    "keywords": ["yii2","extension", "pnotify"],
     "license": "MIT",
     "authors": [
         {
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "xunlight\\toastr\\": ""
+            "xunlight\\pnotify\\": ""
         }
     }
 }
